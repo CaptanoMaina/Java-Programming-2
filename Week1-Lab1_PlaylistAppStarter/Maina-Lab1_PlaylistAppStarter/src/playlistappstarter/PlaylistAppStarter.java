@@ -27,8 +27,7 @@ public class PlaylistAppStarter {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        PlaylistAppStarter playlistApp = new PlaylistAppStarter();
-        playlistApp.run();
+        PlaylistAppStarter.run();
     }
     
 }

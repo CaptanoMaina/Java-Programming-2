@@ -53,15 +53,18 @@ public void setPlaylistAuthor(String playlistAuthor){
    this.playlistAuthor = playlistAuthor; 
 }
 
-public ArrayList getPlaylistTracks(){
+public ArrayList<Track> getPlaylistTracks(){
     return this.playlistTracks;
 }
 
-public void setPlaylistTracks(ArrayList playlistTracks){
+public void setPlaylistTracks(ArrayList<Track> playlistTracks){
    this.playlistTracks = playlistTracks; 
 }
 
-
+@Override
+public String toString(){
+return this.getNumberedTracks();
+}
 private String getNumberedTracks() {
         String numberedTracks = "\n";
         int number = 1;
