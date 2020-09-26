@@ -42,7 +42,7 @@ public class PolicyController {
                 loadPolicyFromTextFile(fileName);
             }
             else if (c1== 'O') {
-                //loadPolicyFromObjectFile(fileName);
+                loadPolicyFromObjectFile(fileName);
             }
         }
         else {
@@ -79,8 +79,35 @@ public class PolicyController {
                 policyStart.setTime(policyStartDate);                
             } catch (ParseException ex) {
                 Logger.getLogger(PolicyController.class.getName()).log(Level.SEVERE, null, ex);
-            }            
-            policy = new Policy(policyID, policyType, policyOwner, carReg, carDescription, policyStart); 
+            }  
+            
+            noDrivers = Integer.parseInt(temp[6]);
+            ArrayList<Driver> namedDrivers = new ArrayList<>();
+            Driver newDriver;
+            for (int i=0; i<noDrivers; i++) {
+                line = br.readLine();
+                temp=line.split(Character.toString(DELIMITER));
+                String firstName = stripQuotes(temp[0]);
+                String surname = stripQuotes(temp[1]); 
+                dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String dateOfBirthStr = stripQuotes(temp[2]);
+                Date dateOfBirthDate;
+                try {
+                        dateOfBirthDate = dateFormat.parse(dateOfBirthStr);
+                    dateOfBirth = Calendar.getInstance();
+                    dateOfBirth.setTime(dateOfBirthDate); 
+                } catch (ParseException ex) {
+                    Logger.getLogger(
+                    PolicyController.class.getName()).log(Level.SEVERE,
+                    null, ex);
+                }
+
+                newDriver = new Driver(firstName, surname, dateOfBirth);
+                namedDrivers.add(newDriver);
+            }
+
+            
+            policy = new Policy(policyID, policyType, policyOwner, namedDrivers, carReg, carDescription, policyStart); 
             br.close();
         } catch (IOException ex) {
             Logger.getLogger(PolicyController.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,7 +118,7 @@ public class PolicyController {
         return str.substring(1, str.length()-1);
     }    
 
-    /* public void loadPolicyFromObjectFile(String filename) {    
+     public void loadPolicyFromObjectFile(String filename) {    
         try{
             FileInputStream fin = new FileInputStream(filename);
             try (ObjectInputStream ois = new ObjectInputStream(fin)) {
@@ -101,9 +128,9 @@ public class PolicyController {
             System.out.println(ex);
             System.exit(0);
         }        
-    } */
+    } 
     
-    /*
+    
     public void storePolicyToObjectFile(String filename) {
         ObjectOutputStream output = null;
         try {
@@ -121,8 +148,19 @@ public class PolicyController {
                       .log(Level.SEVERE, null, ex);
             }
         }      
-    } */
-    
+    } 
+        private void storePolicyToTextFile(String fileName) {
+        char DELIMITER=','; 
+        try (PrintWriter output = new PrintWriter(fileName)) {
+            output.println(policy.toString(DELIMITER));
+            output.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(
+            PolicyController.class.getName()).log(Level.SEVERE, 
+            null, ex);
+        } 
+    }
+
     public void run() {
         boolean finished = false;
         do {
@@ -130,20 +168,20 @@ public class PolicyController {
             char choice = displayPolicyMenu();
             switch (choice) {
                 case 'A': 
-                    //addDriver();
+                    addDriver();
                     break;
                 case 'B': 
-                    //deleteDriver();
+                    deleteDriver();
                     break;                      
                 case 'F':
                     InputHelper inputHelper = new InputHelper();
                     char c = inputHelper.readCharacter("Store to a Text File (T) or Object File (O)?");
                     String fileName = inputHelper.readString("Enter File name"); 
                     if (c == 'T') {
-                        //storePolicyToTextFile(fileName);
+                        storePolicyToTextFile(fileName);
                     }
                     else if (c == 'O') {
-                        //storePolicyToObjectFile(fileName);
+                        storePolicyToObjectFile(fileName);
                     }                    
                     finished = true;
             }
@@ -158,19 +196,19 @@ public class PolicyController {
         return inputHelper.readCharacter("Enter choice", "ABF");
     }    
     
-    /*private void addDriver() {
+    private void addDriver() {
         InputHelper inputHelper = new InputHelper();
         String firstName = inputHelper.readString("Enter First Name");
         String surname = inputHelper.readString("Enter Surname");
         Calendar dateOfBirth = inputHelper.readDate("Enter Date of Birth", "yyyy-MM-dd");     
         Driver newDriver = new Driver(firstName, surname, dateOfBirth);               
         policy.addDriver(newDriver);          
-    } */
+    } 
     
-    /*private void deleteDriver() {
+    private void deleteDriver() {
         InputHelper inputHelper = new InputHelper();
         Calendar dateOfBirth = inputHelper.readDate("Enter Date of Birth", "yyyy-MM-dd");  
         policy.removeDriver(dateOfBirth);
-    }*/
-
+    }
 }
+        

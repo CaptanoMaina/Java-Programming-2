@@ -22,7 +22,7 @@ public class Policy implements Serializable {
     private String carReg;
     private String carDescription;
     private Calendar policyStartDate;
-    //private ArrayList<Driver> namedDrivers;    
+    private ArrayList<Driver> namedDrivers;    
     
     static int lastPolicyIdAllocated = 0;
     
@@ -37,7 +37,7 @@ public class Policy implements Serializable {
         this.carReg = carReg;
         this.carDescription = carDescription;
         this.policyStartDate = policyStartDate;
-        //this.namedDrivers = new ArrayList<>();        
+        this.namedDrivers = new ArrayList<>();        
     }  
     
     public Policy(int policyId, String policyType, String policyOwner, String carReg, String carDescription, Calendar policyStartDate) {
@@ -47,10 +47,14 @@ public class Policy implements Serializable {
         this.carReg = carReg;
         this.carDescription = carDescription;
         this.policyStartDate = policyStartDate;
-        //this.namedDrivers = new ArrayList<>();        
+        this.namedDrivers = new ArrayList<>();        
     }  
+
+    public Policy(int policyID, String policyType, String policyOwner, ArrayList<Driver> namedDrivers, String carReg, String carDescription, Calendar policyStart) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
-    /* public Policy(int policyId, String policyType, String policyOwner, String carReg, String carDescription, Calendar policyStartDate, ArrayList<Driver> namedDrivers) {
+     public Policy(int policyId, String policyType, String policyOwner, String carReg, String carDescription, Calendar policyStartDate, ArrayList<Driver> namedDrivers) {
         this.policyId = policyId;
         this.policyType = policyType;
         this.policyOwner = policyOwner;
@@ -60,7 +64,7 @@ public class Policy implements Serializable {
         this.namedDrivers = namedDrivers;
         if (policyId > lastPolicyIdAllocated)
             lastPolicyIdAllocated = policyId;        
-    } */
+    }
     
     public int getPolicyId() {
         return this.policyId;
@@ -106,7 +110,7 @@ public class Policy implements Serializable {
         this.policyStartDate = policyStartDate;
     }    
 
-    /*public ArrayList<Driver> getNamedDrivers() {
+    public ArrayList<Driver> getNamedDrivers() {
         return this.namedDrivers;
     }
     
@@ -123,7 +127,7 @@ public class Policy implements Serializable {
         String dateString = formatter.format(this.namedDrivers.get(2).getDateOfBirth().getTime());   
         Predicate<Driver> dateOfBirthPredicate = d-> formatter.format(d.getDateOfBirth().getTime()).equals(dateString);       
         this.namedDrivers.removeIf(dateOfBirthPredicate);
-    }    */
+    }    
     
     private String getFormattedStartDate()
     {
@@ -149,11 +153,11 @@ public class Policy implements Serializable {
                 QUOTE + this.policyOwner + QUOTE + delimiter +                
                 QUOTE + this.carReg + QUOTE + delimiter +  
                 QUOTE + this.carDescription + QUOTE + delimiter +
-                QUOTE + getFormattedStartDate() + QUOTE /*+ delimiter +                 
-                Integer.toString(namedDrivers.size()) */+ EOLN;
-        /*for (Driver driver : namedDrivers) {
+                QUOTE + getFormattedStartDate() + QUOTE + delimiter +                 
+                Integer.toString(namedDrivers.size()) + EOLN;
+        for (Driver driver : namedDrivers) {
             str += driver.toString(delimiter);
-        } */
+        } 
         return str;
     }     
 }
