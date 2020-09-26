@@ -124,9 +124,13 @@ public class Policy implements Serializable {
     
     public void removeDriver(Calendar dateOfBirth) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
-        String dateString = formatter.format(this.namedDrivers.get(2).getDateOfBirth().getTime());   
+        String dateString = formatter.format(dateOfBirth.getTime());   
         Predicate<Driver> dateOfBirthPredicate = d-> formatter.format(d.getDateOfBirth().getTime()).equals(dateString);       
-        this.namedDrivers.removeIf(dateOfBirthPredicate);
+        
+        
+        boolean drv = this.namedDrivers.removeIf(dateOfBirthPredicate);
+        System.out.println(drv);
+        
     }    
     
     private String getFormattedStartDate()
