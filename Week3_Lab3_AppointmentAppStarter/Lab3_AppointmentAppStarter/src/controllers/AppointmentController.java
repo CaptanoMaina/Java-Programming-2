@@ -11,7 +11,10 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 
 /**
  *
@@ -82,11 +85,25 @@ public class AppointmentController {
     }
 
     public void loadAppointmentsFromObjectFile(String filename) { 
-        System.out.println("loadAppointmentsFromObjectFile");
+        try{
+            FileInputStream fappy = new FileInputStream(filename);
+            ObjectInputStream ois = new ObjectInputStream(fappy);
+            appointments = (ArrayList<Appointment>)ois.readObject();
+        }catch(IOException | ClassNotFoundException ex){
+            System.out.println(ex);
+            System.exit(0);
+        }
     }
     
     public void storeAppointmentsToObjectFile(String filename) { 
-        System.out.println("storeAppointmentsToObjectFile");        
+        ObjectOutputStream output = null;
+        try{
+            output = new ObjectOutputStream(new FileOutputStream(filename));
+            output.writeObject(appointments);
+             output.close();
+        } catch (IOException ex){
+            System.out.println(ex);
+        }
     }
     
     public void run() {

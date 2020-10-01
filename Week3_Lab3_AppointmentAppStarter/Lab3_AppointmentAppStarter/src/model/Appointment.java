@@ -13,9 +13,10 @@ import java.time.LocalTime;
  * @author mga
  */
 public class Appointment implements Serializable {
-    private String customerName;
-    private LocalTime appointmentTime;
-    private int appointmentLength;  
+    protected String customerName;
+    protected LocalTime appointmentTime;
+    protected int appointmentLength;  
+    
     
     public Appointment() {
         this.customerName = null;
