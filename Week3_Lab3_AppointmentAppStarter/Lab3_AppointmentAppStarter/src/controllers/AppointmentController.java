@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import model.PromoAppointment;
 
 /**
  *
@@ -57,9 +58,18 @@ public class AppointmentController {
                 customerName = stripQuotes(temp[0]);
                 localTimeStr = stripQuotes(temp[1]);
                 appointmentTime = LocalTime.parse(localTimeStr);
-                appointmentLength = Integer.parseInt(temp[2]);    
-                Appointment appointment = new Appointment(customerName, appointmentTime, appointmentLength); 
-                appointments.add(appointment);  
+                appointmentLength = Integer.parseInt(temp[2]);  
+                if (temp.length == 3){
+                    Appointment appointment = new Appointment(customerName, appointmentTime, appointmentLength); 
+                    appointments.add(appointment);  
+                }else {
+                    String promoCode = stripQuotes(temp[3]);
+                    int discountPercentage = Integer.parseInt(temp[4]);
+                    
+                    PromoAppointment promoAppointment = new PromoAppointment(customerName, appointmentTime, appointmentLength, promoCode, discountPercentage); 
+                    appointments.add(promoAppointment);
+                }
+                
                 line = br.readLine();                
             }
             br.close();
@@ -145,9 +155,17 @@ public class AppointmentController {
         InputHelper inputHelper = new InputHelper();
         String customerName = inputHelper.readString("Enter Customer Name");
         LocalTime appointmentTime = LocalTime.parse(inputHelper.readString("Enter Appointment Time (HH:mm)"));
-        int appointmentLength = inputHelper.readInt("Enter Appointment Length", 120, 15);   
-        Appointment newAppointment = new Appointment(customerName, appointmentTime, appointmentLength);               
-        appointments.add(newAppointment);
+        int appointmentLength = inputHelper.readInt("Enter Appointment Length", 120, 15);
+        char promoChoice = inputHelper.readCharacter("Is this a Promo Appointment (Y/N)?", "YN");
+        if(promoChoice == 'N'){
+            Appointment newAppointment = new Appointment(customerName, appointmentTime, appointmentLength);               
+            appointments.add(newAppointment);
+        }else{
+            String promoCode = inputHelper.readString("Enter Promo Code");
+            int discountPercentage = inputHelper.readInt("Enter the Discount Percentage", 100, 0);
+            PromoAppointment promoAppointment = new PromoAppointment(customerName, appointmentTime, appointmentLength, promoCode, discountPercentage); 
+                    appointments.add(promoAppointment);
+        }
     }
     
     private void cancelAppointment() {
