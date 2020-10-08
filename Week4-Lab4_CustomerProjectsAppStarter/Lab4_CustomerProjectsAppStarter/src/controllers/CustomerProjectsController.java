@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Customer;
+import repositories.Repository;
 
 /**
  *
@@ -22,7 +23,7 @@ import model.Customer;
  */
 public class CustomerProjectsController {
     static char DELIMITER=',';
-    private final ArrayList<Customer> repository;
+    private final Repository repository;
     
     public CustomerProjectsController() {
 
@@ -30,41 +31,16 @@ public class CustomerProjectsController {
         char c = inputHelper.readCharacter("Load an already existing Customers File (Y/N)?");
         if (c == 'Y' || c == 'y') {
             String fileName = inputHelper.readString("Enter filename");               
-            this.repository = load(fileName);
-            // this.repository = new Repository(fileName);
+            //this.repository = load(fileName);
+            this.repository = new Repository(fileName);
         }
         else {
-            this.repository = new ArrayList<>();
-            // this.repository = new Repository();            
+            //this.repository = new ArrayList<>();
+            this.repository = new Repository();            
         }
     }
     
-   public ArrayList<Customer> load(String filename) {
 
-        ArrayList<Customer> repository = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) { 
-            String[] temp;
-            String line = br.readLine();
-            while(line!=null){
-                temp=line.split(Character.toString(DELIMITER));        
-                int customerId = Integer.parseInt(temp[0]);
-                String customerName = stripQuotes(temp[1]);
-                Customer customer = new Customer(customerId, customerName);
-                int noProjects = Integer.parseInt(temp[2]);            
-                for (int i=0; i<noProjects; i++) {
-                    String project = stripQuotes(temp[i+3]);
-                    customer.addProjectToCustomer(project);
-                }
-                repository.add(customer);                
-                line = br.readLine();                
-            }
-            br.close();
-        } catch (IOException ex) {
-            Logger.getLogger(CustomerProjectsController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return repository;
-    } 
    
     public void run() {
         boolean finished = false;
@@ -81,9 +57,8 @@ public class CustomerProjectsController {
                     break;                      
                 case 'F':
                     InputHelper inputHelper = new InputHelper();
-                    String fileName = inputHelper.readString("Enter filename");                
-                    store(fileName); 
-                    //repository.store(fileName);
+                    String fileName = inputHelper.readString("Enter filename");                                    
+                    repository.store(fileName);
                     finished = true;
             }
         } while (!finished);
@@ -103,11 +78,8 @@ public class CustomerProjectsController {
         Customer requiredCustomer=null;
         do {
             int customerId = inputHelper.readInt("Enter Customer Id");
-            //requiredCustomer = repository.getItem(customerId);
-            for (Customer customer:this.repository) {
-                if (customer.getCustomerId() == customerId)
-                    requiredCustomer = customer;
-            }            
+            requiredCustomer = repository.getItem(customerId);
+                        
             if (requiredCustomer != null) {
                 validCustomerId = true;
             }
@@ -123,11 +95,8 @@ public class CustomerProjectsController {
         Customer requiredCustomer=null;
         do {
             int customerId = inputHelper.readInt("Enter Customer Id");
-            //requiredCustomer = repository.getItem(customerId);
-            for (Customer customer:this.repository) {
-                if (customer.getCustomerId() == customerId)
-                    requiredCustomer = customer;
-            }            
+            requiredCustomer = repository.getItem(customerId);
+                      
             if (requiredCustomer != null) {
                 validCustomerId = true;
             }
@@ -137,18 +106,5 @@ public class CustomerProjectsController {
         requiredCustomer.removeProjectFromCustomer(projectNumber);
     }
     
-     public void store(String filename) {
-        try (PrintWriter output = new PrintWriter(filename)) {
-            for (Customer customer:this.repository) {
-                output.print(customer.toString(DELIMITER));
-            }
-            output.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(CustomerProjectsController.class.getName()).log(Level.SEVERE, null, ex);
-        }        
-    }
     
-    private String stripQuotes(String str) {
-        return str.substring(1, str.length()-1);
-    }     
 }
